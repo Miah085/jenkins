@@ -1,4 +1,4 @@
-// Jenkins CI/CD Lab - Final Integration Test v1.0
+// Jenkins CI/CD Lab - Final Integration Test v1.1
 
 pipeline {
     agent any
@@ -26,10 +26,13 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                bat 'echo Test step — replace with your command'
+                // This line creates the XML file Jenkins needs to show the "Test Result" page
+                bat 'echo ^<testsuite tests="1" failures="0"^>^<testcase classname="Lab8" name="SimulatedTest"/^>^</testsuite^> > test-results.xml'
             }
             post {
                 always {
+                    // This command tells Jenkins to parse the XML file we just created
+                    junit 'test-results.xml'
                     echo 'Test stage complete.' 
                 }
             }
@@ -38,21 +41,21 @@ pipeline {
         stage('Archive') {
             steps {
                 echo 'Archiving build artifacts...'
-                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+                // Updated to archive the XML so you can see it in the build summary
+                archiveArtifacts artifacts: 'test-results.xml', allowEmptyArchive: true
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Simulating deployment...'
-                // Fixed: Moved inside the stages block and cleaned up syntax
                 bat 'if not exist "C:\\tmp\\deployed-app" mkdir "C:\\tmp\\deployed-app"'
-                bat 'echo File content > index.html' // Ensuring file exists for the copy command
+                bat 'echo File content > index.html' 
                 bat 'copy index.html "C:\\tmp\\deployed-app\\index.html"'
                 echo 'Application deployed to C:/tmp/deployed-app'
             }
         }
-    } // This bracket correctly closes the STAGES section
+    } 
 
     post {
         success {
