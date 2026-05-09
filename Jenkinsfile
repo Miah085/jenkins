@@ -31,7 +31,8 @@ pipeline {
             }
             post {
                 always {
-                    // Comment this out for now so the build passes
+                    // We add an echo here so the block isn't empty
+                    echo 'Test stage complete.' 
                     // junit '**/target/surefire-reports/*.xml'
                 }
             }
