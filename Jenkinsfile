@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         APP_NAME = 'your-app-name'
-        BUILD_DIR = 'target'   // or 'build', 'dist' for your project
+        BUILD_DIR = 'target' 
     }
 
     stages {
@@ -19,9 +19,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                // Maven:  sh 'mvn clean package -DskipTests'
-                // Gradle: sh './gradlew build'
-                // npm:    sh 'npm install && npm run build'
                 bat 'echo Build step — replace with your command'
             }
         }
@@ -33,9 +30,7 @@ pipeline {
             }
             post {
                 always {
-                    // We add an echo here so the block isn't empty
                     echo 'Test stage complete.' 
-                    // junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
@@ -46,29 +41,27 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
             }
         }
-    }
 
-    stage('Deploy') {
+        stage('Deploy') {
             steps {
                 echo 'Simulating deployment...'
-                // Creates the directory if it doesn't exist
+                // Fixed: Moved inside the stages block and cleaned up syntax
                 bat 'if not exist "C:\\tmp\\deployed-app" mkdir "C:\\tmp\\deployed-app"'
-                // Copies your project files to the deployment folder
+                bat 'echo File content > index.html' // Ensuring file exists for the copy command
                 bat 'copy index.html "C:\\tmp\\deployed-app\\index.html"'
                 echo 'Application deployed to C:/tmp/deployed-app'
             }
         }
+    } // This bracket correctly closes the STAGES section
 
     post {
         success {
-            mail to: 'your-actual-email@gmail.com',
-                 subject: "BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Good news! Build ${env.BUILD_URL} completed successfully." [cite: 65]
+            echo "SUCCESS: Email notification would be sent to your email."
+            echo "Build #${env.BUILD_NUMBER} completed successfully."
         }
         failure {
-            mail to: 'your-actual-email@gmail.com',
-                 subject: "BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Build ${env.BUILD_URL} has failed. Please check the logs." [cite: 65]
+            echo "FAILURE: Alerting developer."
+            echo "Build #${env.BUILD_NUMBER} has failed. Check the logs."
         }
     }
 }
