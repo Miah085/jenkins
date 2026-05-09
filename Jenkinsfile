@@ -46,6 +46,17 @@ pipeline {
         }
     }
 
+    stage('Deploy') {
+            steps {
+                echo 'Simulating deployment...'
+                // Creates the directory if it doesn't exist
+                bat 'if not exist "C:\\tmp\\deployed-app" mkdir "C:\\tmp\\deployed-app"'
+                // Copies your project files to the deployment folder
+                bat 'copy index.html "C:\\tmp\\deployed-app\\index.html"'
+                echo 'Application deployed to C:/tmp/deployed-app'
+            }
+        }
+
     post {
         success {
             echo 'Pipeline completed successfully!'
