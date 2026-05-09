@@ -1,3 +1,5 @@
+// Jenkins CI/CD Lab - Final Integration Test v1.0
+
 pipeline {
     agent any
 
@@ -59,10 +61,14 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            mail to: 'your-actual-email@gmail.com',
+                 subject: "BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Good news! Build ${env.BUILD_URL} completed successfully." [cite: 65]
         }
         failure {
-            echo 'Pipeline FAILED — check the logs above.'
+            mail to: 'your-actual-email@gmail.com',
+                 subject: "BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build ${env.BUILD_URL} has failed. Please check the logs." [cite: 65]
         }
     }
 }
